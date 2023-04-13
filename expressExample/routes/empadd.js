@@ -3,8 +3,7 @@ var router = express.Router();
 const http = require('https');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
-//http post call
-const http = require('https');
+
 
 
 
