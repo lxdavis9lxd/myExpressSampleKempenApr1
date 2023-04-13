@@ -10,6 +10,10 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 
+
+
+
+
 function makeHttpPostCall(varHttpRequest,varToken, varBody) {
  // const postData = JSON.stringify(varBody);
   const options = {
@@ -61,8 +65,20 @@ router.get('/', function(req, res, next) {
   const url = 'https://bdpamkedev.com/api/v3/employees';
   const token = global.DB_token;
   const method = 'POST';
-  const body = req.body
-  console.log("body", req.body.empnumber);
+  const body = JSON.stringify({
+    "employeeNumber": "567567567",
+    "lastName": "test",
+    "firstName": "tester",
+    "extension": "1234",
+    "email": "tester@gmai.com",
+    "officeCode": "1",
+    "reportsTo": "1002",
+    "jobTitle": "cvb",
+    "phone": "1234561234",
+    "createdBy": "lxd",
+    "modifiedBy": "lxd"
+})
+  console.log("body", body);
   makeHttpPostCall(url,token, body)
     .then((data) => {
       console.log(data); // Response body from the API endpoint
