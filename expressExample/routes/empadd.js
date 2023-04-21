@@ -1,56 +1,38 @@
 var express = require('express');
 var router = express.Router();
-const http = require('https');
+const http = require('http');
 var bodyParser = require('body-parser');
+const { Console } = require('console');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-
-
-
-
-
-
-
-
-
-
-function makeHttpPostCall(varHttpRequest,varToken, varBody) {
- // const postData = JSON.stringify(varBody);
-  const options = {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${varToken}`,
-      'Content-Type': 'application/json'
-    },
-    body:JSON.stringify(varBody)
-
-    
-  };
-
-  //const postData = JSON.stringify(varBody);
-  console.log("PostData: "+options.body);
-  return new Promise((resolve, reject) => {
-    const req = http.request(varHttpRequest, options, (res) => {
-      let data = '';
-
-      res.on('data', (chunk) => {
-        data += chunk;
+async function makeHttpPostCall(varHttpRequest, varBody, varResult) {
+    const fetch = require('node-fetch');
+    await fetch(varHttpRequest, {
       
-      });
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + global.DB_token,
+       'Content-Type': 'application/json'    
+       },
+  body: varBody
+    
+  })
+.then(response => response.json())
+.then(data => {
+  console.log("this is data", data);
+  varResult = data;
+  return varResult;
+})
+.catch(error => {
+  console.error(error);
+  return "error";
+});
+    
+  }
+ 
 
-      res.on('end', () => {
-        resolve(data);
-      });
-    }).on('error', (error) => {
-      reject(error);
-    });
-    //console.log('data',data)
-       
-        req.write(data);
-        req.end();
-   
-  });
-}
+
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('empadd', { title: 'Products Are Us Employee Add' });
@@ -60,13 +42,14 @@ router.get('/', function(req, res, next) {
   
   router.post('/', urlencodedParser, async (req, res, next)  => {
 
-    console.log("Post",req.body)
+    //console.log("Post",req.body)
   // Example usage
-  const url = 'https://bdpamkedev.com/api/v3/employees';
-  const token = global.DB_token;
-  const method = 'POST';
-  const body = JSON.stringify({
-    "employeeNumber": "567567567",
+  const varHttpRequest = 'https://bdpamkedev.com/api/v5/employees';
+  const varToken = global.DB_token;
+  
+  
+  const varBody = JSON.stringify({
+    "employeeNumber": "1385767",
     "lastName": "test",
     "firstName": "tester",
     "extension": "1234",
@@ -78,19 +61,15 @@ router.get('/', function(req, res, next) {
     "createdBy": "lxd",
     "modifiedBy": "lxd"
 })
-  console.log("body", body);
-  makeHttpPostCall(url,token, body)
-    .then((data) => {
-      console.log(data); // Response body from the API endpoint
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  
-  
-  
-  
-    
+  //console.log("body", varBody);
+  var varResult =''
+  await   makeHttpPostCall(varHttpRequest, varBody, varResult)
+      .then ((data) => {
+ console.log("message", (data));
+console.log("at data", );
+ //console.log ("data", makeHttpPostCall);
+ res.render('empadd', { title: 'Products Are Us Employee Add' });
+      }) ;
 
 
 
